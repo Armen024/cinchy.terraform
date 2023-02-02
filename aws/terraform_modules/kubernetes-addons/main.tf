@@ -33,12 +33,16 @@
 # }
 
 module "cluster_autoscaler" {
-  count             = var.enable_cluster_autoscaler ? 1 : 0
-  source            = "./cluster-autoscaler"
-  helm_config       = var.cluster_autoscaler_helm_config
-  manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = local.addon_context
+  source = "./cluster-autoscaler"
+
+  count = var.enable_cluster_autoscaler ? 1 : 0
+
+  eks_cluster_version = local.eks_cluster_version
+  helm_config         = var.cluster_autoscaler_helm_config
+  manage_via_gitops   = var.argocd_manage_add_ons
+  addon_context       = local.addon_context
 }
+
 
 module "metrics_server" {
   count             = var.enable_metrics_server ? 1 : 0
@@ -70,4 +74,17 @@ module "secrets_store_csi_driver" {
   helm_config       = var.secrets_store_csi_driver_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
   addon_context     = local.addon_context
+}
+
+module "aws_for_fluent_bit" {
+  count                    = var.enable_aws_for_fluentbit ? 1 : 0
+  source                   = "./aws-for-fluentbit"
+  helm_config              = var.aws_for_fluentbit_helm_config
+  irsa_policies            = var.aws_for_fluentbit_irsa_policies
+  create_cw_log_group      = var.aws_for_fluentbit_create_cw_log_group
+  cw_log_group_name        = var.aws_for_fluentbit_cw_log_group_name
+  cw_log_group_retention   = var.aws_for_fluentbit_cw_log_group_retention
+  cw_log_group_kms_key_arn = var.aws_for_fluentbit_cw_log_group_kms_key_arn
+  manage_via_gitops        = var.argocd_manage_add_ons
+  addon_context            = local.addon_context
 }

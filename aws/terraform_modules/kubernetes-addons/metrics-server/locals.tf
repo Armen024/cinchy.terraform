@@ -5,7 +5,7 @@ locals {
     name        = local.name
     chart       = "${path.module}/helm/metrics-server"
     #repository  = "https://kubernetes-sigs.github.io/metrics-server/"
-    version     = "3.8.1"
+    version     = "3.8.2"
     namespace   = "kube-system"
     description = "Metric server helm Chart deployment configuration"
     values      = []

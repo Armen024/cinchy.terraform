@@ -4,9 +4,9 @@ variable "eks_cluster_id" {
 }
 
 variable "eks_cluster_domain" {
-  description = "The domain for the EKS cluster."
-  default     = ""
+  description = "The domain for the EKS cluster"
   type        = string
+  default     = ""
 }
 
 variable "eks_worker_security_group_id" {
@@ -113,9 +113,15 @@ variable "enable_amazon_eks_kube_proxy" {
 }
 
 variable "enable_amazon_eks_aws_ebs_csi_driver" {
+  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
   type        = bool
   default     = false
-  description = "Enable EKS Managed AWS EBS CSI Driver add-on"
+}
+
+variable "custom_image_registry_uri" {
+  description = "Custom image registry URI map of `{region = dkr.endpoint }`"
+  type        = map(string)
+  default     = {}
 }
 
 #-----------CLUSTER AUTOSCALER-------------
@@ -126,9 +132,22 @@ variable "enable_cluster_autoscaler" {
 }
 
 variable "cluster_autoscaler_helm_config" {
+  description = "Cluster Autoscaler Helm Chart config"
   type        = any
   default     = {}
-  description = "Cluster Autoscaler Helm Chart config"
+}
+
+#-----------COREDNS AUTOSCALER-------------
+variable "enable_coredns_autoscaler" {
+  description = "Enable CoreDNS autoscaler add-on"
+  type        = bool
+  default     = false
+}
+
+variable "coredns_autoscaler_helm_config" {
+  description = "CoreDNS Autoscaler Helm Chart config"
+  type        = any
+  default     = {}
 }
 
 #-----------Crossplane ADDON-------------
@@ -377,38 +396,44 @@ variable "spark_k8s_operator_helm_config" {
 
 #-----------AWS FOR FLUENT BIT-------------
 variable "enable_aws_for_fluentbit" {
+  description = "Enable AWS for FluentBit add-on"
   type        = bool
   default     = false
-  description = "Enable AWS for FluentBit add-on"
 }
 
 variable "aws_for_fluentbit_helm_config" {
-  type        = any
   description = "AWS for FluentBit Helm Chart config"
+  type        = any
   default     = {}
 }
 
 variable "aws_for_fluentbit_irsa_policies" {
-  type        = list(string)
   description = "Additional IAM policies for a IAM role for service accounts"
+  type        = list(string)
   default     = []
 }
 
+variable "aws_for_fluentbit_create_cw_log_group" {
+  description = "Set to false to use existing CloudWatch log group supplied via the cw_log_group_name variable."
+  type        = bool
+  default     = true
+}
+
 variable "aws_for_fluentbit_cw_log_group_name" {
-  type        = string
   description = "FluentBit CloudWatch Log group name"
+  type        = string
   default     = null
 }
 
 variable "aws_for_fluentbit_cw_log_group_retention" {
-  type        = number
   description = "FluentBit CloudWatch Log group retention period"
+  type        = number
   default     = 90
 }
 
 variable "aws_for_fluentbit_cw_log_group_kms_key_arn" {
-  type        = string
   description = "FluentBit CloudWatch Log group KMS Key"
+  type        = string
   default     = null
 }
 

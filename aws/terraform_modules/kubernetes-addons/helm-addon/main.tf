@@ -1,12 +1,12 @@
 resource "helm_release" "addon" {
   count                      = var.manage_via_gitops ? 0 : 1
   name                       = var.helm_config["name"]
- # repository                 = var.helm_config["repository"]
+  repository                 = try(var.helm_config["repository"], null)
   chart                      = var.helm_config["chart"]
-  version                    = var.helm_config["version"]
-  timeout                    = try(var.helm_config["timeout"], 300)
+  version                    = try(var.helm_config["version"], null)
+  timeout                    = try(var.helm_config["timeout"], 1200)
   values                     = try(var.helm_config["values"], null)
-  create_namespace           = try(var.helm_config["create_namespace"], false)
+  create_namespace           = var.irsa_config != null ? false : try(var.helm_config["create_namespace"], false)
   namespace                  = var.helm_config["namespace"]
   lint                       = try(var.helm_config["lint"], false)
   description                = try(var.helm_config["description"], "")
@@ -66,5 +66,9 @@ module "irsa" {
   kubernetes_namespace              = var.irsa_config.kubernetes_namespace
   kubernetes_service_account        = var.irsa_config.kubernetes_service_account
   irsa_iam_policies                 = var.irsa_config.irsa_iam_policies
-  addon_context                     = var.addon_context
+  irsa_iam_role_name                = var.irsa_iam_role_name
+  irsa_iam_role_path                = var.addon_context.irsa_iam_role_path
+  irsa_iam_permissions_boundary     = var.addon_context.irsa_iam_permissions_boundary
+  eks_cluster_id                    = var.addon_context.eks_cluster_id
+  eks_oidc_provider_arn             = var.addon_context.eks_oidc_provider_arn
 }

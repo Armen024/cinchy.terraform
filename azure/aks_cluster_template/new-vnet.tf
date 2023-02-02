@@ -110,6 +110,12 @@ resource "azurerm_storage_container" "connections_storage_container" {
   container_access_type = "private"
 }
 
+resource "azurerm_storage_container" "web_storage_container" {
+  name                  = "<<web_storage_container_name>>"
+  storage_account_name  = azurerm_storage_account.account.name
+  container_access_type = "private"
+}
+
 resource "azurerm_storage_container" "platform_storage_container" {
   name                  = "<<platform_storage_container_name>>"
   storage_account_name  = azurerm_storage_account.account.name
